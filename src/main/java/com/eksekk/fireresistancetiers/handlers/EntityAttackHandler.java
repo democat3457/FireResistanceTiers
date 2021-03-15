@@ -3,27 +3,21 @@ package com.eksekk.fireresistancetiers.handlers;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.MobEffects;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class EntityAttackHandler
 {
-	public static final Class ENTITY_CLASS = EntityLivingBase.class;
+	public static final Class<?> ENTITY_CLASS = EntityLivingBase.class;
 	
 	public static final Method canBlockDamageSource = ObfuscationReflectionHelper.findMethod(ENTITY_CLASS, "func_184583_d", boolean.class, DamageSource.class);
 	public static final Method damageShield = ObfuscationReflectionHelper.findMethod(ENTITY_CLASS, "func_184590_k", void.class, float.class);
@@ -45,6 +39,7 @@ public class EntityAttackHandler
 	
 	public static boolean attackEntityFrom(EntityLivingBase entity, DamageSource source, float amount) throws IllegalAccessException, InvocationTargetException
     {
+        if (!net.minecraftforge.common.ForgeHooks.onLivingAttack(entity, source, amount)) return false;
 		if (entity.isEntityInvulnerable(source))
         {
             return false;
@@ -84,7 +79,6 @@ public class EntityAttackHandler
 		
 		            flag = true;
 		        }
-		        //
 		
 		        entity.limbSwingAmount = 1.5F;
 		        boolean flag1 = true;
@@ -142,6 +136,10 @@ public class EntityAttackHandler
 		            {
 		                entity.world.setEntityState(entity, (byte)29);
 		            }
+                    else if (source instanceof EntityDamageSource && ((EntityDamageSource)source).getIsThornsDamage())
+                    {
+                        entity.world.setEntityState(entity, (byte)33);
+                    }
 		            else
 		            {
 		                byte b0;

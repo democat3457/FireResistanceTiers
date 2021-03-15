@@ -1,8 +1,5 @@
 package com.eksekk.fireresistancetiers.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.eksekk.fireresistancetiers.util.Reference;
 
 import net.minecraftforge.common.config.Config;
@@ -12,17 +9,19 @@ import net.minecraftforge.common.config.Config.RequiresMcRestart;
 @Config(modid = Reference.MOD_ID, name = Reference.MOD_ID)
 public class ConfigFields
 {
-	@Comment({"Number of fire resistance tiers",
-			  "one tier gives (1 / MAX_TIERS) * 100% damage reduction",
-			  "final tier or more gives immunity"})
+	@Comment({"Number of fire resistance tiers:",
+			  "One tier gives (1 / MAX_TIERS) * 100% damage reduction",
+			  "Final tier or more gives immunity"})
 	public static int numberOfTiers = 1;
 	
-	@Comment({"Vanilla fire resistance potion amplifier (starting from 0)"})
+    @Comment({"Vanilla fire resistance potion amplifier (starting from 0)",
+              "Potion levels are one more than the amplifier value",
+              "Example: an amplifier of 2 means a potion level/tier of 3"})
 	@RequiresMcRestart
 	public static int potionAmplifier = 0;
 	
 	@Comment({"Vanilla fire resistance strengthened potion amplifier (starting from 0)",
-			  "Set to potionAmplifier value to disable",
+			  "Set to -1 to disable",
 			  "If disabled, no brewing recipe will be available"})
 	@RequiresMcRestart
 	public static int strongPotionAmplifier = 0;
